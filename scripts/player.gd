@@ -2,7 +2,7 @@ extends CharacterBody2D
 @onready var animacao: AnimatedSprite2D = $AnimatedSprite2D
 @onready var colisao: CollisionShape2D = $CollisionShape2D
 
-var walk_speed = 70.0
+var walk_speed = 80.0
 var running_speed = 150.0
 const SLIDE_SPEED = 35
 var sliding_speed
@@ -14,23 +14,22 @@ var running = false
 func slide(ativo: bool, speed: float):
 	if ativo:
 		sliding = true
-		colisao.scale = Vector2(1, 0.6)
-		colisao.position.y = 2
 		sliding_speed = speed + SLIDE_SPEED
+		colisao.shape.size.y = 10
+		colisao.position.y = 2
 	else:
+		colisao.shape.size.y = 16
+		colisao.position.y = -1
 		sliding_speed = SLIDE_SPEED
 		sliding = false
-		colisao.scale = Vector2(1, 1)
-		colisao.position.y = 0
 
 func _physics_process(delta: float) -> void:
 	if sliding:
 		sliding_speed = move_toward(sliding_speed, 0, 100 * delta)
-	
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
-
+	print(position.y)
 	# Handle jump.
 	if Input.is_action_just_pressed("jump") and is_on_floor() and not sliding:
 		velocity.y = JUMP_VELOCITY
@@ -77,8 +76,6 @@ func _physics_process(delta: float) -> void:
 
 		else:
 			animacao.play("idle")
-	
-	print(sliding_speed)
 	
 	if (direction != 0) and Input.is_action_just_pressed("slide") and is_on_floor() and not jumping:
 		if running:
