@@ -4,8 +4,9 @@ extends CharacterBody2D
 
 var walk_speed = 80.0
 var running_speed = 150.0
-const SLIDE_SPEED = 35
+const SLIDE_BONUS_DISTANCE = 35
 var sliding_speed
+var slide_cooldown = 0
 var JUMP_VELOCITY = -250.0
 var sliding = false
 var jumping = false
@@ -14,22 +15,27 @@ var running = false
 func slide(ativo: bool, speed: float):
 	if ativo:
 		sliding = true
-		sliding_speed = speed + SLIDE_SPEED
+		sliding_speed = speed + SLIDE_BONUS_DISTANCE
 		colisao.shape.size.y = 10
 		colisao.position.y = 2
 	else:
-		colisao.shape.size.y = 16
-		colisao.position.y = -1
-		sliding_speed = SLIDE_SPEED
+		colisao.shape.size.y = 15
+		colisao.position.y = -0.5
+		sliding_speed = SLIDE_BONUS_DISTANCE
 		sliding = false
 
 func _physics_process(delta: float) -> void:
 	if sliding:
 		sliding_speed = move_toward(sliding_speed, 0, 100 * delta)
+		slide_cooldown = move_toward(slide_cooldown, 5, 1 * delta)
+		
+	if !sliding:
+		slide_cooldown = move_toward(slide_cooldown, 0, 1 * delta)
+	
+	print(slide_cooldown)
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
-	print(position.y)
 	# Handle jump.
 	if Input.is_action_just_pressed("jump") and is_on_floor() and not sliding:
 		velocity.y = JUMP_VELOCITY
@@ -78,13 +84,12 @@ func _physics_process(delta: float) -> void:
 			animacao.play("idle")
 	
 	if (direction != 0) and Input.is_action_just_pressed("slide") and is_on_floor() and not jumping:
-		if running:
-			slide(true, running_speed)
-		else:
-			slide(true, walk_speed)
-	elif direction == 0 or Input.is_action_just_released("slide"):
-		slide(false, 0)
-	if jumping:
+		if slide_cooldown == 0:
+			if running:
+				slide(true, running_speed)
+			else:
+				slide(true, walk_speed)
+	elif direction == 0 or Input.is_action_just_released("slide") or jumping or sliding_speed == 0:
 		slide(false, 0)
 	
 	move_and_slide()

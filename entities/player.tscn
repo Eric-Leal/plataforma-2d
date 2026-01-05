@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://bpsktutedc3t5" path="res://sprites/1 - Penguin/Belly_Sliding (16 x 16).png" id="4_qly61"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qly61"]
-size = Vector2(14, 16)
+size = Vector2(14, 15)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_e4p34"]
 atlas = ExtResource("2_b0kkn")
@@ -202,12 +202,13 @@ script = ExtResource("1_merdl")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 z_index = 1
-position = Vector2(0, -1)
+position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_qly61")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_i623q")
 animation = &"idle"
+frame_progress = 0.84208906
 
 [node name="Camera2D" type="Camera2D" parent="."]
 limit_left = 0
