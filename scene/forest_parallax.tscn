@@ -1,0 +1,64 @@
+[gd_scene load_steps=7 format=3 uid="uid://i2a03j7jg4lg"]
+
+[ext_resource type="Texture2D" uid="uid://cc3utrpd65h7u" path="res://sprites/Seasonal Tilesets/2 - Autumn Forest/Background parts/6 - Distant_trees.png" id="1_f2tf5"]
+[ext_resource type="Texture2D" uid="uid://s3xxgrbh0mpg" path="res://sprites/Seasonal Tilesets/2 - Autumn Forest/Background parts/1 - Leaf_top.png" id="2_370n5"]
+[ext_resource type="Texture2D" uid="uid://cu7da6li6qc5u" path="res://sprites/Seasonal Tilesets/2 - Autumn Forest/Background parts/5 - Tree_row_BG_2.png" id="3_kbgmb"]
+[ext_resource type="Texture2D" uid="uid://b43n7co38i3kq" path="res://sprites/Seasonal Tilesets/2 - Autumn Forest/Background parts/4 - Tree_row_BG_1.png" id="4_w1fwh"]
+[ext_resource type="Texture2D" uid="uid://ctnkpomm5d46j" path="res://sprites/Seasonal Tilesets/2 - Autumn Forest/Background parts/3 - Bottom_leaf_piles.png" id="5_o6xus"]
+[ext_resource type="Texture2D" uid="uid://bsarpkjmlw7q0" path="res://sprites/Seasonal Tilesets/2 - Autumn Forest/Background parts/2 - Trees.png" id="6_4bp10"]
+
+[node name="forest_parallax" type="Node2D"]
+
+[node name="fundo" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0, 0)
+repeat_size = Vector2(288, 0)
+repeat_times = 3
+
+[node name="Sprite2D" type="Sprite2D" parent="fundo"]
+texture = ExtResource("1_f2tf5")
+centered = false
+
+[node name="arvores_topo" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.1, 0.1)
+repeat_size = Vector2(288, 0)
+repeat_times = 3
+
+[node name="Sprite2D" type="Sprite2D" parent="arvores_topo"]
+texture = ExtResource("2_370n5")
+centered = false
+
+[node name="floresta_fundo" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.2, 0.2)
+repeat_size = Vector2(288, 0)
+repeat_times = 3
+
+[node name="Sprite2D" type="Sprite2D" parent="floresta_fundo"]
+texture = ExtResource("3_kbgmb")
+centered = false
+
+[node name="floresta_frente" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.3, 0.3)
+repeat_size = Vector2(288, 0)
+repeat_times = 3
+
+[node name="Sprite2D" type="Sprite2D" parent="floresta_frente"]
+texture = ExtResource("4_w1fwh")
+centered = false
+
+[node name="arbustos_frente" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.4, 0.4)
+repeat_size = Vector2(288, 0)
+repeat_times = 3
+
+[node name="Sprite2D" type="Sprite2D" parent="arbustos_frente"]
+texture = ExtResource("5_o6xus")
+centered = false
+
+[node name="arvores_frente" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.5, 0.5)
+repeat_size = Vector2(288, 0)
+repeat_times = 3
+
+[node name="Sprite2D" type="Sprite2D" parent="arvores_frente"]
+texture = ExtResource("6_4bp10")
+centered = false
