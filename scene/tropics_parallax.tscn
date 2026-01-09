@@ -1,0 +1,58 @@
+[gd_scene load_steps=7 format=3 uid="uid://c2ewk0qh5c7qt"]
+
+[ext_resource type="Texture2D" uid="uid://jv6siionuxh7" path="res://sprites/Seasonal Tilesets/3 - Tropics/Background parts/5 - Sky_color.png" id="1_nt1bm"]
+[ext_resource type="Texture2D" uid="uid://t3o7anau78yu" path="res://sprites/Seasonal Tilesets/3 - Tropics/Background parts/4 - Floating_clouds.png" id="2_gst72"]
+[ext_resource type="Texture2D" uid="uid://k60lb6bx86pq" path="res://sprites/Seasonal Tilesets/3 - Tropics/Background parts/3 - Background_clouds.png" id="3_qmxs8"]
+[ext_resource type="Texture2D" uid="uid://dyc5a8v0pvg4p" path="res://sprites/Seasonal Tilesets/3 - Tropics/Background parts/1 - Waters_version_1.png" id="4_wa3fw"]
+[ext_resource type="Texture2D" uid="uid://c0okt0c2te07g" path="res://sprites/Seasonal Tilesets/3 - Tropics/Background parts/2 - Waters_version_2.png" id="5_ok0on"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_7g4dq"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_wa3fw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_ok0on")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Tropics_parallax" type="Node2D"]
+
+[node name="sky" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0, 0)
+repeat_size = Vector2(288, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="sky"]
+texture = ExtResource("1_nt1bm")
+centered = false
+
+[node name="floating_clouds" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.1, 0.05)
+repeat_size = Vector2(288, 0)
+autoscroll = Vector2(-10, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="floating_clouds"]
+texture = ExtResource("2_gst72")
+centered = false
+
+[node name="background_clouds" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.2, 0.1)
+repeat_size = Vector2(288, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="background_clouds"]
+texture = ExtResource("3_qmxs8")
+centered = false
+
+[node name="water" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.3, 0.15)
+repeat_size = Vector2(288, 0)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="water"]
+sprite_frames = SubResource("SpriteFrames_7g4dq")
+autoplay = "default"
+frame_progress = 0.3438562
+centered = false
