@@ -1,21 +1,25 @@
 extends CharacterBody2D
-@onready var colisao: CollisionShape2D = $CollisionShape2D
 
 
 enum PlayerState{
 	idle,
 	walk, 
 	jump,
+	duck,
+	walk_duck,
 	run,
 	slide,	
 }
 
-
 @onready var animacao: AnimatedSprite2D = $AnimatedSprite2D
+@onready var colisao: CollisionShape2D = $CollisionShape2D
 
-const SPEED = 80.0
+const WALK_SPEED = 80.0
+const DUCK_SPEED = 30.0
+const RUN_SPEED = 130.0
 const JUMP_VELOCITY = -250.0
-
+var current_speed = WALK_SPEED
+var direction = 0
 var status: PlayerState
 
 func _ready() -> void:
@@ -34,9 +38,18 @@ func _physics_process(delta: float) -> void:
 			walk_state()
 		PlayerState.jump:
 			jump_state()
+		PlayerState.duck:
+			duck_state()
+		PlayerState.walk_duck:
+			walk_duck_state()
 	
 	move_and_slide()
 	
+func go_to_walk_duck_state():
+	status = PlayerState.walk_duck
+	animacao.play("walk_ducking")
+	set_duck_collsion()
+
 	
 func go_to_idle_state():
 	status = PlayerState.idle
@@ -51,10 +64,24 @@ func go_to_jump_state():
 	status = PlayerState.jump
 	animacao.play("jump")	
 	velocity.y = JUMP_VELOCITY
+
+func go_to_duck_state():
+	status = PlayerState.duck
+	animacao.play("duck")
+	set_duck_collsion()
 	
+func set_duck_collsion():
+	colisao.shape.size.y = 11
+	colisao.position.y = 2.5
+	
+	
+func exit_from_duck_state():
+	colisao.shape.size.y = 15
+	colisao.position.y = 0.5
 	
 func idle_state():
-	move()
+	current_speed = WALK_SPEED
+	move(WALK_SPEED)
 	if velocity.x != 0:
 		go_to_walk_state()
 		return
@@ -62,9 +89,14 @@ func idle_state():
 	if Input.is_action_just_pressed("jump"):
 		go_to_jump_state()
 		return
+		
+	if Input.is_action_pressed("duck"):
+		go_to_duck_state()
+		return
 
 func walk_state():
-	move()
+	current_speed = WALK_SPEED
+	move(WALK_SPEED)
 	if velocity.x == 0:
 		go_to_idle_state()
 		return
@@ -72,24 +104,61 @@ func walk_state():
 	if Input.is_action_just_pressed("jump"):
 		go_to_jump_state()
 		return
+		
+	if Input.is_action_pressed("duck"):
+		go_to_walk_duck_state()
+		return
+	
 	
 func jump_state():
-	move()
+	move(current_speed)
 	if is_on_floor():
 		if velocity.x == 0:
 			go_to_idle_state()
 		else:
 			go_to_walk_state()
+		return	
+
+func duck_state():
+	current_speed = DUCK_SPEED
+	move(DUCK_SPEED)
+	
+	if Input.is_action_just_released("duck"):
+		exit_from_duck_state()
+		go_to_idle_state()
+		return 
+		
+	if direction !=0:
+		go_to_walk_duck_state()
+		return
+
+func walk_duck_state():
+	current_speed = DUCK_SPEED
+	move(DUCK_SPEED)
+	if Input.is_action_just_released("duck"):
+		exit_from_duck_state()
+		go_to_walk_state()
+		return
+		
+	if direction == 0:
+		go_to_duck_state()
 		return
 	
+	if Input.is_action_just_pressed("jump"):
+		exit_from_duck_state()
+		current_speed = WALK_SPEED
+		go_to_jump_state()
+		return
 
-func move():
-	var direction := Input.get_axis("left", "right")
+func move(speed: float):	
+	update_direction()
 	if direction:
-		velocity.x = direction * SPEED
+		velocity.x = direction * speed
 	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
-		
+		velocity.x = move_toward(velocity.x, 0, speed)
+
+func update_direction():
+	direction = Input.get_axis("left", "right")
 	if direction < 0: 
 		animacao.flip_h  = true
 	elif direction > 0: 

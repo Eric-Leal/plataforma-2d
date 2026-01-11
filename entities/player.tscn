@@ -1,10 +1,12 @@
-[gd_scene load_steps=30 format=3 uid="uid://doc61wlw1ucb7"]
+[gd_scene load_steps=36 format=3 uid="uid://doc61wlw1ucb7"]
 
 [ext_resource type="Script" uid="uid://ct02bt4wlylu4" path="res://scripts/player.gd" id="1_merdl"]
 [ext_resource type="Texture2D" uid="uid://8eo2bmyt3cgd" path="res://sprites/1 - Penguin/Idle (16 x 16).png" id="2_b0kkn"]
+[ext_resource type="Texture2D" uid="uid://cq1ijr4hl1k4o" path="res://sprites/1 - Penguin/Ducking (16 x 16).png" id="2_qsoyl"]
 [ext_resource type="Texture2D" uid="uid://ieyb2mkpck2i" path="res://sprites/1 - Penguin/Waddling (16 x 16).png" id="3_e4p34"]
 [ext_resource type="Texture2D" uid="uid://cl5p6ykfcm6jr" path="res://sprites/1 - Penguin/Jump (16 x 16).png" id="3_rfe5m"]
 [ext_resource type="Texture2D" uid="uid://bpsktutedc3t5" path="res://sprites/1 - Penguin/Belly_Sliding (16 x 16).png" id="4_qly61"]
+[ext_resource type="Texture2D" uid="uid://cpwp8u6ychm0v" path="res://sprites/1 - Penguin/walk_ducking.png" id="7_6nm46"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qly61"]
 size = Vector2(14, 15)
@@ -97,8 +99,32 @@ region = Rect2(64, 0, 16, 16)
 atlas = ExtResource("3_e4p34")
 region = Rect2(80, 0, 16, 16)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_slxql"]
+atlas = ExtResource("7_6nm46")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_evlff"]
+atlas = ExtResource("7_6nm46")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7db53"]
+atlas = ExtResource("7_6nm46")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_plaij"]
+atlas = ExtResource("7_6nm46")
+region = Rect2(48, 0, 16, 16)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_i623q"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_qsoyl")
+}],
+"loop": false,
+"name": &"duck",
+"speed": 5.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_e4p34")
@@ -194,6 +220,23 @@ animations = [{
 "loop": true,
 "name": &"walk",
 "speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slxql")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_evlff")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7db53")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_plaij")
+}],
+"loop": true,
+"name": &"walk_ducking",
+"speed": 10.0
 }]
 
 [node name="Player" type="CharacterBody2D" groups=["Player"]]
@@ -204,10 +247,10 @@ script = ExtResource("1_merdl")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 z_index = 1
-position = Vector2(0, -0.5)
+position = Vector2(0, 0.5)
 shape = SubResource("RectangleShape2D_qly61")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_i623q")
-animation = &"idle"
-frame_progress = 0.84208906
+animation = &"duck"
+frame_progress = 1.0
