@@ -141,12 +141,15 @@ texture = ExtResource("2_udkip")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_selcm"]
 texture = ExtResource("3_8t5ty")
+3:1/animation_separation = Vector2i(1, 0)
 3:1/0 = 0
 3:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 0, -8, 0)
 3:1/0/physics_layer_0/polygon_0/one_way = true
+4:1/animation_separation = Vector2i(1, 0)
 4:1/0 = 0
 4:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 0, -8, 0)
 4:1/0/physics_layer_0/polygon_0/one_way = true
+5:1/animation_separation = Vector2i(1, 0)
 5:1/0 = 0
 5:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 0, -8, 0)
 5:1/0/physics_layer_0/polygon_0/one_way = true

@@ -1,11 +1,164 @@
-[gd_scene load_steps=8 format=4 uid="uid://bgri2ifxye1hh"]
+[gd_scene load_steps=22 format=4 uid="uid://bgri2ifxye1hh"]
 
 [ext_resource type="PackedScene" uid="uid://c2ewk0qh5c7qt" path="res://scene/tropics_parallax.tscn" id="1_4big0"]
+[ext_resource type="Shader" uid="uid://cwkcgg6ot37ro" path="res://shaders/water.gdshader" id="1_7xb8y"]
 [ext_resource type="PackedScene" uid="uid://doc61wlw1ucb7" path="res://entities/player.tscn" id="1_bmxgx"]
 [ext_resource type="TileSet" uid="uid://dhw5qvoo4tv31" path="res://tiles/terrain.tres" id="2_ry6l7"]
 [ext_resource type="TileSet" uid="uid://dkhar7p18tlog" path="res://tiles/decoration.tres" id="3_ry6l7"]
 [ext_resource type="PackedScene" uid="uid://chotr1c56af2i" path="res://entities/camera.tscn" id="5_mf6tq"]
 [ext_resource type="PackedScene" uid="uid://cecj7xl8fu86q" path="res://entities/level_end.tscn" id="6_pss51"]
+[ext_resource type="Texture2D" uid="uid://ds7y4e1mkuvp5" path="res://sprites/Seasonal Tilesets/4 - Winter World/Winter_entities (16 x 16).png" id="7_ei81g"]
+[ext_resource type="Texture2D" uid="uid://c2pp3fac7fr6d" path="res://sprites/Seasonal Tilesets/5 - Misc. universal tiles/House (112 x 96).png" id="8_ytc0w"]
+[ext_resource type="Texture2D" uid="uid://bbuma8yxu6vlx" path="res://sprites/Seasonal Tilesets/3 - Tropics/Tropics_entities (16 x 16).png" id="9_xflqb"]
+[ext_resource type="Texture2D" uid="uid://b4towf0i4r4wb" path="res://sprites/Seasonal Tilesets/1 - Grassland/Grassland_entities (16 x 16).png" id="10_xnncp"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_7xb8y"]
+frequency = 0.0526
+fractal_type = 2
+fractal_lacunarity = 4.685
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_34ia6"]
+noise = SubResource("FastNoiseLite_7xb8y")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ytc0w"]
+shader = ExtResource("1_7xb8y")
+shader_parameter/noise = SubResource("NoiseTexture2D_34ia6")
+shader_parameter/scroll = Vector2(0, 0)
+shader_parameter/scroll2 = Vector2(0, 0)
+shader_parameter/distortion_strength = -0.0009999525474999604
+shader_parameter/tone_color = Color(0.6313726, 1, 1, 1)
+shader_parameter/alpha_total = 1.0
+shader_parameter/top_color = Color(1.0569379, 1.0569379, 1.0404052, 1)
+shader_parameter/light_start = 0.590000028025
+shader_parameter/light_end = 0.0
+shader_parameter/screen_offset_x = 0.0
+shader_parameter/screen_offset_y = 0.0
+shader_parameter/wave_speed = 3.0
+shader_parameter/wave_freq = 10.0
+shader_parameter/wave_width = 1.0
+shader_parameter/wave_count = 10.0
+shader_parameter/wave_bias = -0.001
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_t8vtq"]
+load_path = "res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex"
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ei81g"]
+texture = ExtResource("7_ei81g")
+9:1/0 = 0
+10:1/0 = 0
+11:1/0 = 0
+9:3/0 = 0
+9:3/0/z_index = 1
+10:3/0 = 0
+10:3/0/z_index = 1
+11:3/0 = 0
+11:3/0/z_index = 1
+12:3/0 = 0
+12:3/0/z_index = 1
+1:5/0 = 0
+3:5/0 = 0
+4:5/0 = 0
+1:1/size_in_atlas = Vector2i(3, 3)
+1:1/0 = 0
+1:1/0/z_index = 2
+5:1/size_in_atlas = Vector2i(3, 3)
+5:1/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ytc0w"]
+texture = ExtResource("8_ytc0w")
+0:0/size_in_atlas = Vector2i(7, 6)
+0:0/0 = 0
+0:0/0/texture_origin = Vector2i(0, 8)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xflqb"]
+texture = ExtResource("9_xflqb")
+margins = Vector2i(0, 10)
+11:2/0 = 0
+12:2/0 = 0
+13:2/0 = 0
+14:2/0 = 0
+15:2/0 = 0
+5:3/0 = 0
+6:3/0 = 0
+7:3/0 = 0
+9:3/0 = 0
+11:3/0 = 0
+13:3/0 = 0
+15:3/0 = 0
+12:5/animation_separation = Vector2i(1, 0)
+12:5/animation_frame_0/duration = 0.3
+12:5/animation_frame_1/duration = 0.3
+12:5/0 = 0
+12:5/0/z_index = 2
+12:6/animation_separation = Vector2i(1, 0)
+12:6/animation_frame_0/duration = 0.3
+12:6/animation_frame_1/duration = 0.3
+12:6/0 = 0
+12:6/0/z_index = 2
+12:7/0 = 0
+14:7/0 = 0
+12:8/0 = 0
+13:8/0 = 0
+14:8/0 = 0
+1:1/size_in_atlas = Vector2i(3, 3)
+1:1/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xnncp"]
+texture = ExtResource("10_xnncp")
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+5:1/0 = 0
+6:1/0 = 0
+7:1/0 = 0
+9:1/0 = 0
+10:1/0 = 0
+11:1/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+5:2/0 = 0
+6:2/0 = 0
+7:2/0 = 0
+9:2/0 = 0
+10:2/0 = 0
+11:2/0 = 0
+15:2/0 = 0
+16:2/0 = 0
+17:2/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+5:3/0 = 0
+6:3/0 = 0
+7:3/0 = 0
+9:3/0 = 0
+10:3/0 = 0
+11:3/0 = 0
+14:4/0 = 0
+15:4/0 = 0
+16:4/0 = 0
+17:4/0 = 0
+18:4/0 = 0
+1:5/0 = 0
+3:5/0 = 0
+5:5/0 = 0
+6:5/0 = 0
+7:5/0 = 0
+9:5/0 = 0
+10:5/0 = 0
+11:5/0 = 0
+12:5/0 = 0
+14:5/0 = 0
+16:5/0 = 0
+18:5/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_mjtd1"]
+sources/0 = SubResource("TileSetAtlasSource_ei81g")
+sources/1 = SubResource("TileSetAtlasSource_ytc0w")
+sources/2 = SubResource("TileSetAtlasSource_xflqb")
+sources/3 = SubResource("TileSetAtlasSource_xnncp")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_17pmc"]
 size = Vector2(20, 176)
@@ -13,29 +166,43 @@ size = Vector2(20, 176)
 [node name="tropic" type="Node2D"]
 metadata/_edit_vertical_guides_ = [400.0]
 
-[node name="Tropics_parallax" parent="." instance=ExtResource("1_4big0")]
+[node name="Camera" parent="." instance=ExtResource("5_mf6tq")]
 
 [node name="Player" parent="." instance=ExtResource("1_bmxgx")]
 position = Vector2(23, 168)
 
+[node name="Tropics_parallax" parent="." instance=ExtResource("1_4big0")]
+
 [node name="terrain" type="TileMapLayer" parent="."]
 position = Vector2(1, 0)
-tile_map_data = PackedByteArray("AAAAAAsAAgABAAMAAAABAAsAAgACAAMAAAACAAsAAgACAAMAAAADAAsAAgACAAMAAAAEAAsAAgACAAMAAAAFAAsAAgACAAMAAAAGAAsAAgACAAMAAAAHAAsAAgACAAMAAAAIAAsAAgACAAMAAAAJAAsAAgACAAMAAAAKAAsAAgACAAMAAAALAAsAAgACAAMAAAAMAAsAAgAHAAMAAAAPAAoAAgAPAAMAAAASAAsAAgABAAMAAAATAAsAAgACAAMAAAAUAAsAAgACAAMAAAAVAAsAAgACAAMAAAAWAAsAAgACAAMAAAAXAAsAAgACAAMAAAAYAAsAAgACAAMAAAAZAAsAAgACAAMAAAAaAAsAAgACAAMAAAAbAAsAAgACAAMAAAAcAAsAAgACAAMAAAAdAAsAAgACAAMAAAAeAAsAAgACAAMAAAAfAAsAAgACAAMAAAAgAAsAAgACAAMAAAAhAAsAAgACAAMAAAAiAAsAAgACAAMAAAAjAAsAAgACAAMAAAAkAAsAAgAHAAMAAAAJAAgAAgAJAAMAAAAKAAgAAgAKAAMAAAALAAgAAgAMAAMAAAAMAAgAAgAMAAMAAAANAAgAAgANAAMAAAANAAYAAgAJAAMAAAAOAAYAAgAKAAMAAAAPAAYAAgAMAAMAAAAQAAYAAgAMAAMAAAARAAYAAgANAAMAAAA=")
+tile_map_data = PackedByteArray("AAAAAAsAAgABAAMAAAABAAsAAgACAAMAAAACAAsAAgACAAMAAAADAAsAAgACAAMAAAAEAAsAAgACAAMAAAAFAAsAAgACAAMAAAAGAAsAAgACAAMAAAAHAAsAAgACAAMAAAAIAAsAAgACAAMAAAAJAAsAAgACAAMAAAAKAAsAAgACAAMAAAALAAsAAgACAAMAAAAMAAsAAgAHAAMAAAAPAAoAAgAPAAMAAAASAAsAAgABAAMAAAATAAsAAgACAAMAAAAUAAsAAgACAAMAAAAVAAsAAgACAAMAAAAWAAsAAgACAAMAAAAXAAsAAgACAAMAAAAYAAsAAgACAAMAAAAZAAsAAgACAAMAAAAaAAsAAgACAAMAAAAbAAsAAgACAAMAAAAcAAsAAgACAAMAAAAdAAsAAgACAAMAAAAeAAsAAgACAAMAAAAfAAsAAgACAAMAAAAgAAsAAgACAAMAAAAhAAsAAgACAAMAAAAiAAsAAgACAAMAAAAjAAsAAgACAAMAAAAkAAsAAgAHAAMAAAAJAAgAAgAJAAMAAAAKAAgAAgAKAAMAAAALAAgAAgAMAAMAAAAMAAgAAgAMAAMAAAANAAgAAgANAAMAAAANAAYAAgAJAAMAAAAOAAYAAgAKAAMAAAAPAAYAAgAMAAMAAAAQAAYAAgAMAAMAAAARAAYAAgANAAMAAAAlAAsAAgABAAMAAAAmAAsAAgACAAMAAAAnAAsAAgACAAMAAAAoAAsAAgACAAMAAAApAAsAAgACAAMAAAAqAAsAAgACAAMAAAArAAsAAgACAAMAAAAsAAsAAgACAAMAAAAtAAsAAgACAAMAAAAuAAsAAgACAAMAAAAvAAsAAgACAAMAAAAwAAsAAgACAAMAAAAxAAsAAgACAAMAAAAyAAsAAgACAAMAAAAzAAsAAgACAAMAAAA0AAsAAgACAAMAAAA1AAsAAgACAAMAAAA2AAsAAgACAAMAAAA3AAsAAgAHAAMAAAA4AAsAAgABAAMAAAA5AAsAAgACAAMAAAA6AAsAAgACAAMAAAA7AAsAAgACAAMAAAA8AAsAAgACAAMAAAA9AAsAAgACAAMAAAA+AAsAAgACAAMAAAA/AAsAAgACAAMAAABAAAsAAgACAAMAAABBAAsAAgACAAMAAABCAAsAAgACAAMAAABDAAsAAgACAAMAAABEAAsAAgACAAMAAABFAAsAAgACAAMAAABGAAsAAgACAAMAAABHAAsAAgACAAMAAABIAAsAAgACAAMAAABJAAsAAgACAAMAAABKAAsAAgAHAAMAAAAAAAwAAgADAAUAAAAAAA0AAgADAAYAAAABAA0AAgAEAAYAAAABAAwAAgAEAAQAAAACAAwAAgAEAAQAAAACAA0AAgAEAAYAAAADAA0AAgAEAAYAAAADAAwAAgAEAAQAAAAEAA0AAgAEAAYAAAAEAAwAAgAEAAQAAAAFAA0AAgAEAAYAAAAFAAwAAgAEAAQAAAAGAA0AAgAEAAYAAAAGAAwAAgAEAAQAAAAHAAwAAgAEAAQAAAAHAA0AAgAEAAYAAAAIAAwAAgAEAAQAAAAJAAwAAgAEAAQAAAAKAAwAAgAEAAQAAAALAAwAAgAEAAQAAAALAA0AAgAEAAYAAAAKAA0AAgAEAAYAAAAJAA0AAgAEAAYAAAAIAA0AAgAEAAYAAAAMAAwAAgAFAAUAAAAMAA0AAgAFAAYAAAA=")
 tile_set = ExtResource("2_ry6l7")
 
+[node name="BackBufferCopy" type="BackBufferCopy" parent="."]
+copy_mode = 2
+
+[node name="Agua" type="Sprite2D" parent="."]
+top_level = true
+material = SubResource("ShaderMaterial_ytc0w")
+position = Vector2(288, 219)
+scale = Vector2(4.9, 0.503)
+texture = SubResource("CompressedTexture2D_t8vtq")
+
 [node name="decoration" type="TileMapLayer" parent="."]
-tile_map_data = PackedByteArray("AAABAAwAAgAMAAYAAAACAAwAAgAMAAYAAAADAAwAAgAMAAYAAAAEAAwAAgAMAAYAAAAFAAwAAgAMAAYAAAAGAAwAAgAMAAYAAAAHAAwAAgAMAAYAAAAIAAoAAgAJAAMAAAAIAAwAAgAMAAYAAAAJAAsAAgAMAAUAAAAJAAwAAgAMAAYAAAAKAAsAAgAMAAUAAAAKAAwAAgAMAAYAAAALAAsAAgAMAAUAAAALAAwAAgAMAAYAAAAMAAsAAgAMAAUAAAAMAAwAAgAMAAYAAAANAAwAAgAMAAYAAAAOAAwAAgAMAAYAAAAPAAwAAgAMAAYAAAAQAAwAAgAMAAYAAAARAAwAAgAMAAYAAAASAAsAAgAMAAUAAAASAAwAAgAMAAYAAAATAAsAAgAMAAUAAAATAAwAAgAMAAYAAAAUAAsAAgAMAAUAAAAUAAwAAgAMAAYAAAAVAAwAAgAMAAYAAAAWAAwAAgAMAAYAAAAXAAwAAgAMAAYAAAAYAAwAAgAMAAYAAAAZAAwAAgAMAAYAAAAaAAwAAgAMAAYAAAAbAAwAAgAMAAYAAAAcAAwAAgAMAAYAAAAdAAwAAgAMAAYAAAAeAAwAAgAMAAYAAAAfAAwAAgAMAAYAAAAgAAwAAgAMAAYAAAAhAAwAAgAMAAYAAAAiAAwAAgAMAAYAAAAjAAwAAgAMAAYAAAAAAAsAAgAMAAUAAAAAAAwAAgAMAAYAAAABAAsAAgAMAAUAAAACAAsAAgAMAAUAAAADAAsAAgAMAAUAAAAEAAsAAgAMAAUAAAAFAAsAAgAMAAUAAAAGAAsAAgAMAAUAAAAHAAkAAgABAAEAAAAHAAsAAgAMAAUAAAAIAAsAAgAMAAUAAAAKAAoAAgAFAAMAAAALAAoAAgAGAAMAAAANAAsAAgAMAAUAAAAOAAsAAgAMAAUAAAAPAAsAAgAMAAUAAAAQAAsAAgAMAAUAAAARAAsAAgAMAAUAAAASAAoAAgAFAAMAAAATAAkAAgABAAEAAAATAAoAAgAGAAMAAAAVAAsAAgAMAAUAAAAWAAsAAgAMAAUAAAAXAAsAAgAMAAUAAAAYAAsAAgAMAAUAAAAZAAsAAgAMAAUAAAAaAAsAAgAMAAUAAAAbAAsAAgAMAAUAAAAcAAsAAgAMAAUAAAAdAAsAAgAMAAUAAAAeAAsAAgAMAAUAAAAfAAsAAgAMAAUAAAAgAAsAAgAMAAUAAAAhAAsAAgAMAAUAAAAiAAsAAgAMAAUAAAAjAAsAAgAMAAUAAAAUAAoAAgAHAAMAAAAMAAoAAgAHAAMAAAAYAAoAAwADAAUAAAA=")
+tile_map_data = PackedByteArray("AAAIAAoAAgAJAAMAAAAHAAkAAgABAAEAAAAKAAoAAgAFAAMAAAALAAoAAgAGAAMAAAASAAoAAgAFAAMAAAATAAkAAgABAAEAAAATAAoAAgAGAAMAAAAUAAoAAgAHAAMAAAAMAAoAAgAHAAMAAAAYAAoAAwADAAUAAAA=")
 tile_set = ExtResource("3_ry6l7")
 
-[node name="Camera" parent="." instance=ExtResource("5_mf6tq")]
-limit_right = 400
+[node name="decoration2" type="TileMapLayer" parent="."]
+visible = false
+tile_map_data = PackedByteArray("AAAAAAwAAgAMAAUAAAABAAwAAgAMAAUAAAACAAwAAgAMAAUAAAADAAwAAgAMAAUAAAAEAAwAAgAMAAUAAAAFAAwAAgAMAAUAAAAGAAwAAgAMAAUAAAAHAAwAAgAMAAUAAAAIAAwAAgAMAAUAAAAJAAwAAgAMAAUAAAAKAAwAAgAMAAUAAAALAAwAAgAMAAUAAAAMAAwAAgAMAAUAAAANAAwAAgAMAAUAAAAOAAwAAgAMAAUAAAAPAAwAAgAMAAUAAAAQAAwAAgAMAAUAAAARAAwAAgAMAAUAAAASAAwAAgAMAAUAAAATAAwAAgAMAAUAAAAUAAwAAgAMAAUAAAAVAAwAAgAMAAUAAAAWAAwAAgAMAAUAAAAXAAwAAgAMAAUAAAAYAAwAAgAMAAUAAAAZAAwAAgAMAAUAAAAaAAwAAgAMAAUAAAAbAAwAAgAMAAUAAAAcAAwAAgAMAAUAAAAdAAwAAgAMAAUAAAAeAAwAAgAMAAUAAAAfAAwAAgAMAAUAAAAgAAwAAgAMAAUAAAAhAAwAAgAMAAUAAAAiAAwAAgAMAAUAAAAjAAwAAgAMAAUAAAAkAAwAAgAMAAUAAAA=")
+tile_set = SubResource("TileSet_mjtd1")
 
 [node name="LevelEnd" parent="." instance=ExtResource("6_pss51")]
 position = Vector2(397, 166)
 next_level = "forest"
 
 [node name="CollisionShape2D" parent="LevelEnd" index="0"]
-position = Vector2(0, -78)
+position = Vector2(-4, -147)
 shape = SubResource("RectangleShape2D_17pmc")
 
 [editable path="LevelEnd"]

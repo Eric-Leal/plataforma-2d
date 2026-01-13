@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://c2ewk0qh5c7qt"]
+[gd_scene load_steps=13 format=3 uid="uid://c2ewk0qh5c7qt"]
 
 [ext_resource type="Texture2D" uid="uid://jv6siionuxh7" path="res://sprites/Seasonal Tilesets/3 - Tropics/Background parts/5 - Sky_color.png" id="1_nt1bm"]
 [ext_resource type="Texture2D" uid="uid://t3o7anau78yu" path="res://sprites/Seasonal Tilesets/3 - Tropics/Background parts/4 - Floating_clouds.png" id="2_gst72"]
 [ext_resource type="Texture2D" uid="uid://k60lb6bx86pq" path="res://sprites/Seasonal Tilesets/3 - Tropics/Background parts/3 - Background_clouds.png" id="3_qmxs8"]
 [ext_resource type="Texture2D" uid="uid://dyc5a8v0pvg4p" path="res://sprites/Seasonal Tilesets/3 - Tropics/Background parts/1 - Waters_version_1.png" id="4_wa3fw"]
 [ext_resource type="Texture2D" uid="uid://c0okt0c2te07g" path="res://sprites/Seasonal Tilesets/3 - Tropics/Background parts/2 - Waters_version_2.png" id="5_ok0on"]
+[ext_resource type="Shader" uid="uid://cwkcgg6ot37ro" path="res://shaders/water.gdshader" id="6_ok0on"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_7g4dq"]
 animations = [{
@@ -16,21 +17,59 @@ animations = [{
 "texture": ExtResource("5_ok0on")
 }],
 "loop": true,
-"name": &"default",
+"name": &"new_animation",
 "speed": 5.0
 }]
 
+[sub_resource type="SpriteFrames" id="SpriteFrames_wa3fw"]
+animations = []
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_hnyyi"]
+frequency = 0.0526
+fractal_type = 2
+fractal_lacunarity = 4.685
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_wa3fw"]
+noise = SubResource("FastNoiseLite_hnyyi")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wa3fw"]
+shader = ExtResource("6_ok0on")
+shader_parameter/noise = SubResource("NoiseTexture2D_wa3fw")
+shader_parameter/scroll = Vector2(0, 0)
+shader_parameter/scroll2 = Vector2(0, 0)
+shader_parameter/distortion_strength = -0.0009999525474999604
+shader_parameter/tone_color = Color(0.6313726, 1, 1, 1)
+shader_parameter/alpha_total = 1.0
+shader_parameter/top_color = Color(1.0569379, 1.0569379, 1.0404052, 1)
+shader_parameter/light_start = 0.594000028215
+shader_parameter/light_end = 0.0
+shader_parameter/screen_offset_x = 0.0
+shader_parameter/screen_offset_y = 0.0
+shader_parameter/wave_speed = 3.0
+shader_parameter/wave_freq = 10.0
+shader_parameter/wave_width = 1.0
+shader_parameter/wave_count = 10.0
+shader_parameter/wave_bias = 0.001
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_wa3fw"]
+load_path = "res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex"
+
 [node name="Tropics_parallax" type="Node2D"]
+z_index = -1
 
 [node name="sky" type="Parallax2D" parent="."]
+z_index = -1
 scroll_scale = Vector2(0, 0)
 repeat_size = Vector2(288, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="sky"]
+z_index = -1
 texture = ExtResource("1_nt1bm")
 centered = false
 
 [node name="floating_clouds" type="Parallax2D" parent="."]
+z_index = -1
 scroll_scale = Vector2(0.1, 0.05)
 repeat_size = Vector2(288, 0)
 autoscroll = Vector2(-10, 0)
@@ -40,19 +79,46 @@ texture = ExtResource("2_gst72")
 centered = false
 
 [node name="background_clouds" type="Parallax2D" parent="."]
+z_index = -1
 scroll_scale = Vector2(0.2, 0.1)
 repeat_size = Vector2(288, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="background_clouds"]
+z_index = -1
 texture = ExtResource("3_qmxs8")
 centered = false
 
 [node name="water" type="Parallax2D" parent="."]
+z_index = -1
 scroll_scale = Vector2(0.3, 0.15)
 repeat_size = Vector2(288, 0)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="water"]
+z_index = -1
 sprite_frames = SubResource("SpriteFrames_7g4dq")
-autoplay = "default"
-frame_progress = 0.3438562
+animation = &"new_animation"
+autoplay = "new_animation"
 centered = false
+
+[node name="water3" type="Parallax2D" parent="."]
+z_index = -1
+scroll_scale = Vector2(0.3, 0.15)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="water3"]
+z_index = -1
+sprite_frames = SubResource("SpriteFrames_wa3fw")
+animation = &""
+centered = false
+
+[node name="Icon" type="Sprite2D" parent="water3/AnimatedSprite2D"]
+z_index = -1
+z_as_relative = false
+material = SubResource("ShaderMaterial_wa3fw")
+position = Vector2(288.00003, 199.25)
+scale = Vector2(4.9, 0.503)
+texture = SubResource("CompressedTexture2D_wa3fw")
+
+[node name="water2" type="Parallax2D" parent="."]
+visible = false
+z_index = -1
+scroll_scale = Vector2(0.3, 0.15)
