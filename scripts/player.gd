@@ -7,12 +7,16 @@ enum PlayerState{
 	jump,
 	duck,
 	walk_duck,
+	fall,
 	run,
 	slide,	
 }
 
 @onready var animacao: AnimatedSprite2D = $AnimatedSprite2D
 @onready var colisao: CollisionShape2D = $CollisionShape2D
+
+@export var acceleration = 100
+@export var deceleration = 100
 
 const WALK_SPEED = 80.0
 const DUCK_SPEED = 30.0
@@ -21,29 +25,45 @@ const JUMP_VELOCITY = -250.0
 var current_speed = WALK_SPEED
 var direction = 0
 var status: PlayerState
+var jump_count = 0
+@export var max_jump_count = 2
 
+func move(speed: float, delta):	
+	update_direction()
+	if direction:
+		velocity.x = move_toward(velocity.x, direction * speed, acceleration * delta)
+	else:
+		velocity.x = move_toward(velocity.x, 0, deceleration * delta)
+		
+		
 func _ready() -> void:
 	go_to_idle_state()
 
 
 func _physics_process(delta: float) -> void:
-	
+	print(jump_count)
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 	
 	match status:
 		PlayerState.idle:
-			idle_state()
+			idle_state(delta)
 		PlayerState.walk:
-			walk_state()
+			walk_state(delta)
 		PlayerState.jump:
-			jump_state()
+			jump_state(delta)
 		PlayerState.duck:
-			duck_state()
+			duck_state(delta)
 		PlayerState.walk_duck:
-			walk_duck_state()
+			walk_duck_state(delta)
+		PlayerState.fall:
+			fall_state(delta)
 	
 	move_and_slide()
+
+func go_to_fall_state():
+	status = PlayerState.fall
+	animacao.play("fall")
 	
 func go_to_walk_duck_state():
 	status = PlayerState.walk_duck
@@ -64,24 +84,18 @@ func go_to_jump_state():
 	status = PlayerState.jump
 	animacao.play("jump")	
 	velocity.y = JUMP_VELOCITY
+	jump_count += 1
 
 func go_to_duck_state():
 	status = PlayerState.duck
 	animacao.play("duck")
 	set_duck_collsion()
 	
-func set_duck_collsion():
-	colisao.shape.size.y = 11
-	colisao.position.y = 2.5
+
 	
-	
-func exit_from_duck_state():
-	colisao.shape.size.y = 15
-	colisao.position.y = 0.5
-	
-func idle_state():
+func idle_state(delta):
 	current_speed = WALK_SPEED
-	move(WALK_SPEED)
+	move(WALK_SPEED, delta)
 	if velocity.x != 0:
 		go_to_walk_state()
 		return
@@ -94,9 +108,28 @@ func idle_state():
 		go_to_duck_state()
 		return
 
-func walk_state():
+func fall_state(delta):
+	move(current_speed, delta)
+	
+	if Input.is_action_just_pressed("jump") && can_jump():
+		go_to_jump_state()
+		return
+	
+	if is_on_floor():
+		jump_count = 0
+		if velocity.x == 0:
+			go_to_idle_state()
+		else:
+			go_to_walk_state()
+		return	
+
+func can_jump() -> bool:
+	return jump_count < max_jump_count
+
+func walk_state(delta):
 	current_speed = WALK_SPEED
-	move(WALK_SPEED)
+	move(WALK_SPEED, delta)
+	
 	if velocity.x == 0:
 		go_to_idle_state()
 		return
@@ -108,20 +141,26 @@ func walk_state():
 	if Input.is_action_pressed("duck"):
 		go_to_walk_duck_state()
 		return
+		
+	if !is_on_floor():
+		jump_count += 1
+		go_to_fall_state()
+		return
 	
-	
-func jump_state():
-	move(current_speed)
-	if is_on_floor():
-		if velocity.x == 0:
-			go_to_idle_state()
-		else:
-			go_to_walk_state()
-		return	
+func jump_state(delta):
+	move(current_speed, delta)
+	if Input.is_action_just_pressed("jump") && can_jump():
+		go_to_jump_state()
+		return
 
-func duck_state():
+	if velocity.y > 0:
+		go_to_fall_state()
+		return
+		
+
+func duck_state(delta):
 	current_speed = DUCK_SPEED
-	move(DUCK_SPEED)
+	move(DUCK_SPEED, delta)
 	
 	if Input.is_action_just_released("duck"):
 		exit_from_duck_state()
@@ -132,9 +171,11 @@ func duck_state():
 		go_to_walk_duck_state()
 		return
 
-func walk_duck_state():
+
+
+func walk_duck_state(delta):
 	current_speed = DUCK_SPEED
-	move(DUCK_SPEED)
+	move(DUCK_SPEED, delta)
 	if Input.is_action_just_released("duck"):
 		exit_from_duck_state()
 		go_to_walk_state()
@@ -150,12 +191,15 @@ func walk_duck_state():
 		go_to_jump_state()
 		return
 
-func move(speed: float):	
-	update_direction()
-	if direction:
-		velocity.x = direction * speed
-	else:
-		velocity.x = move_toward(velocity.x, 0, speed)
+func set_duck_collsion():
+	colisao.shape.size.y = 11
+	colisao.position.y = 2.5
+	
+func exit_from_duck_state():
+	colisao.shape.size.y = 15
+	colisao.position.y = 0.5
+
+
 
 func update_direction():
 	direction = Input.get_axis("left", "right")

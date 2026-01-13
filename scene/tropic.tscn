@@ -12,37 +12,6 @@
 [ext_resource type="Texture2D" uid="uid://bbuma8yxu6vlx" path="res://sprites/Seasonal Tilesets/3 - Tropics/Tropics_entities (16 x 16).png" id="9_xflqb"]
 [ext_resource type="Texture2D" uid="uid://b4towf0i4r4wb" path="res://sprites/Seasonal Tilesets/1 - Grassland/Grassland_entities (16 x 16).png" id="10_xnncp"]
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_7xb8y"]
-frequency = 0.0526
-fractal_type = 2
-fractal_lacunarity = 4.685
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_34ia6"]
-noise = SubResource("FastNoiseLite_7xb8y")
-seamless = true
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ytc0w"]
-shader = ExtResource("1_7xb8y")
-shader_parameter/noise = SubResource("NoiseTexture2D_34ia6")
-shader_parameter/scroll = Vector2(0, 0)
-shader_parameter/scroll2 = Vector2(0, 0)
-shader_parameter/distortion_strength = -0.0009999525474999604
-shader_parameter/tone_color = Color(0.6313726, 1, 1, 1)
-shader_parameter/alpha_total = 1.0
-shader_parameter/top_color = Color(1.0569379, 1.0569379, 1.0404052, 1)
-shader_parameter/light_start = 0.590000028025
-shader_parameter/light_end = 0.0
-shader_parameter/screen_offset_x = 0.0
-shader_parameter/screen_offset_y = 0.0
-shader_parameter/wave_speed = 3.0
-shader_parameter/wave_freq = 10.0
-shader_parameter/wave_width = 1.0
-shader_parameter/wave_count = 10.0
-shader_parameter/wave_bias = -0.001
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_t8vtq"]
-load_path = "res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex"
-
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ei81g"]
 texture = ExtResource("7_ei81g")
 9:1/0 = 0
@@ -73,7 +42,6 @@ texture = ExtResource("8_ytc0w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xflqb"]
 texture = ExtResource("9_xflqb")
-margins = Vector2i(0, 10)
 11:2/0 = 0
 12:2/0 = 0
 13:2/0 = 0
@@ -160,6 +128,37 @@ sources/1 = SubResource("TileSetAtlasSource_ytc0w")
 sources/2 = SubResource("TileSetAtlasSource_xflqb")
 sources/3 = SubResource("TileSetAtlasSource_xnncp")
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_7xb8y"]
+frequency = 0.0526
+fractal_type = 2
+fractal_lacunarity = 4.685
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_t8vtq"]
+noise = SubResource("FastNoiseLite_7xb8y")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ytc0w"]
+shader = ExtResource("1_7xb8y")
+shader_parameter/noise = SubResource("NoiseTexture2D_t8vtq")
+shader_parameter/scroll = Vector2(0, 0)
+shader_parameter/scroll2 = Vector2(0, 0)
+shader_parameter/distortion_strength = -0.00099995254749996
+shader_parameter/tone_color = Color(0.6313726, 1, 1, 1)
+shader_parameter/alpha_total = 1.0
+shader_parameter/top_color = Color(1.0569379, 1.0569379, 1.0404052, 1)
+shader_parameter/light_start = 0.590000028025
+shader_parameter/light_end = 0.0
+shader_parameter/screen_offset_x = 0.0
+shader_parameter/screen_offset_y = 0.0
+shader_parameter/wave_speed = 3.0
+shader_parameter/wave_freq = 9.525
+shader_parameter/wave_width = 1.0
+shader_parameter/wave_count = 10.0
+shader_parameter/wave_bias = -0.001
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_t8vtq"]
+load_path = "res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex"
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_17pmc"]
 size = Vector2(20, 176)
 
@@ -170,8 +169,16 @@ metadata/_edit_vertical_guides_ = [400.0]
 
 [node name="Player" parent="." instance=ExtResource("1_bmxgx")]
 position = Vector2(23, 168)
+acceleration = 0
+deceleration = 0
 
 [node name="Tropics_parallax" parent="." instance=ExtResource("1_4big0")]
+
+[node name="decoration2" type="TileMapLayer" parent="."]
+z_index = -2
+position = Vector2(5, -16)
+tile_map_data = PackedByteArray("AAALAAwAAgAMAAUAAAALAA0AAgAMAAYAAAAMAAwAAgAMAAUAAAAMAA0AAgAMAAYAAAANAAwAAgAMAAUAAAANAA0AAgAMAAYAAAAOAAwAAgAMAAUAAAAOAA0AAgAMAAYAAAAPAAwAAgAMAAUAAAAPAA0AAgAMAAYAAAAQAAwAAgAMAAUAAAAQAA0AAgAMAAYAAAARAAwAAgAMAAUAAAARAA0AAgAMAAYAAAASAAwAAgAMAAUAAAASAA0AAgAMAAYAAAA=")
+tile_set = SubResource("TileSet_mjtd1")
 
 [node name="terrain" type="TileMapLayer" parent="."]
 position = Vector2(1, 0)
@@ -181,7 +188,8 @@ tile_set = ExtResource("2_ry6l7")
 [node name="BackBufferCopy" type="BackBufferCopy" parent="."]
 copy_mode = 2
 
-[node name="Agua" type="Sprite2D" parent="."]
+[node name="Agua2" type="Sprite2D" parent="."]
+visible = false
 top_level = true
 material = SubResource("ShaderMaterial_ytc0w")
 position = Vector2(288, 219)
@@ -192,17 +200,12 @@ texture = SubResource("CompressedTexture2D_t8vtq")
 tile_map_data = PackedByteArray("AAAIAAoAAgAJAAMAAAAHAAkAAgABAAEAAAAKAAoAAgAFAAMAAAALAAoAAgAGAAMAAAASAAoAAgAFAAMAAAATAAkAAgABAAEAAAATAAoAAgAGAAMAAAAUAAoAAgAHAAMAAAAMAAoAAgAHAAMAAAAYAAoAAwADAAUAAAA=")
 tile_set = ExtResource("3_ry6l7")
 
-[node name="decoration2" type="TileMapLayer" parent="."]
-visible = false
-tile_map_data = PackedByteArray("AAAAAAwAAgAMAAUAAAABAAwAAgAMAAUAAAACAAwAAgAMAAUAAAADAAwAAgAMAAUAAAAEAAwAAgAMAAUAAAAFAAwAAgAMAAUAAAAGAAwAAgAMAAUAAAAHAAwAAgAMAAUAAAAIAAwAAgAMAAUAAAAJAAwAAgAMAAUAAAAKAAwAAgAMAAUAAAALAAwAAgAMAAUAAAAMAAwAAgAMAAUAAAANAAwAAgAMAAUAAAAOAAwAAgAMAAUAAAAPAAwAAgAMAAUAAAAQAAwAAgAMAAUAAAARAAwAAgAMAAUAAAASAAwAAgAMAAUAAAATAAwAAgAMAAUAAAAUAAwAAgAMAAUAAAAVAAwAAgAMAAUAAAAWAAwAAgAMAAUAAAAXAAwAAgAMAAUAAAAYAAwAAgAMAAUAAAAZAAwAAgAMAAUAAAAaAAwAAgAMAAUAAAAbAAwAAgAMAAUAAAAcAAwAAgAMAAUAAAAdAAwAAgAMAAUAAAAeAAwAAgAMAAUAAAAfAAwAAgAMAAUAAAAgAAwAAgAMAAUAAAAhAAwAAgAMAAUAAAAiAAwAAgAMAAUAAAAjAAwAAgAMAAUAAAAkAAwAAgAMAAUAAAA=")
-tile_set = SubResource("TileSet_mjtd1")
-
 [node name="LevelEnd" parent="." instance=ExtResource("6_pss51")]
 position = Vector2(397, 166)
 next_level = "forest"
 
 [node name="CollisionShape2D" parent="LevelEnd" index="0"]
-position = Vector2(-4, -147)
+position = Vector2(-7, -79)
 shape = SubResource("RectangleShape2D_17pmc")
 
 [editable path="LevelEnd"]
