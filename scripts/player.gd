@@ -1,26 +1,26 @@
 extends CharacterBody2D
 
 
-enum PlayerState{
+enum PlayerState {
 	idle,
-	walk, 
+	walk,
 	jump,
 	duck,
 	walk_duck,
 	fall,
 	run,
-	slide,	
+	slide,
 }
 
 @onready var animacao: AnimatedSprite2D = $AnimatedSprite2D
 @onready var colisao: CollisionShape2D = $CollisionShape2D
 
-@export var acceleration = 100
-@export var deceleration = 100
+@export var acceleration = 580
+@export var deceleration = 580
 
-const WALK_SPEED = 80.0
+const WALK_SPEED = 60.0
 const DUCK_SPEED = 30.0
-const RUN_SPEED = 130.0
+const RUN_SPEED = 110.0
 const JUMP_VELOCITY = -250.0
 var current_speed = WALK_SPEED
 var direction = 0
@@ -28,12 +28,12 @@ var status: PlayerState
 var jump_count = 0
 @export var max_jump_count = 2
 
-func move(speed: float, delta):	
+func move(speed: float, delta):
 	update_direction()
 	if direction:
-		velocity.x = move_toward(velocity.x, direction * speed, acceleration * delta)
+		velocity.x = move_toward(velocity.x, direction * speed, (acceleration - speed) * delta)
 	else:
-		velocity.x = move_toward(velocity.x, 0, deceleration * delta)
+		velocity.x = move_toward(velocity.x, 0, (deceleration - speed) * delta)
 		
 		
 func _ready() -> void:
@@ -58,8 +58,15 @@ func _physics_process(delta: float) -> void:
 			walk_duck_state(delta)
 		PlayerState.fall:
 			fall_state(delta)
+		PlayerState.run:
+			run_state(delta)
 	
 	move_and_slide()
+
+
+func go_to_run_state():
+	status = PlayerState.run
+	animacao.play("running")
 
 func go_to_fall_state():
 	status = PlayerState.fall
@@ -73,16 +80,16 @@ func go_to_walk_duck_state():
 	
 func go_to_idle_state():
 	status = PlayerState.idle
-	animacao.play("idle")	
+	animacao.play("idle")
 
 func go_to_walk_state():
 	status = PlayerState.walk
-	animacao.play("walk")	
+	animacao.play("walk")
 	
 	
 func go_to_jump_state():
 	status = PlayerState.jump
-	animacao.play("jump")	
+	animacao.play("jump")
 	velocity.y = JUMP_VELOCITY
 	jump_count += 1
 
@@ -91,7 +98,19 @@ func go_to_duck_state():
 	animacao.play("duck")
 	set_duck_collsion()
 	
+func run_state(delta):
+	current_speed = RUN_SPEED
+	move(RUN_SPEED, delta)
 
+	if Input.is_action_just_pressed("jump"):
+		go_to_jump_state()
+		return
+	
+	if Input.is_action_just_released("run"):
+		go_to_walk_state()
+		return	
+
+	pass
 	
 func idle_state(delta):
 	current_speed = WALK_SPEED
@@ -121,7 +140,7 @@ func fall_state(delta):
 			go_to_idle_state()
 		else:
 			go_to_walk_state()
-		return	
+		return
 
 func can_jump() -> bool:
 	return jump_count < max_jump_count
@@ -146,6 +165,10 @@ func walk_state(delta):
 		jump_count += 1
 		go_to_fall_state()
 		return
+
+	if Input.is_action_pressed("run"):
+		go_to_run_state()
+		return
 	
 func jump_state(delta):
 	move(current_speed, delta)
@@ -165,12 +188,11 @@ func duck_state(delta):
 	if Input.is_action_just_released("duck"):
 		exit_from_duck_state()
 		go_to_idle_state()
-		return 
+		return
 		
-	if direction !=0:
+	if direction != 0:
 		go_to_walk_duck_state()
 		return
-
 
 
 func walk_duck_state(delta):
@@ -200,15 +222,12 @@ func exit_from_duck_state():
 	colisao.position.y = 0.5
 
 
-
 func update_direction():
 	direction = Input.get_axis("left", "right")
-	if direction < 0: 
-		animacao.flip_h  = true
-	elif direction > 0: 
+	if direction < 0:
+		animacao.flip_h = true
+	elif direction > 0:
 		animacao.flip_h = false
-
-
 
 
 #var walk_speed = 80.0
@@ -232,13 +251,6 @@ func update_direction():
 		#colisao.position.y = -0.5
 		#sliding_speed = SLIDE_BONUS_DISTANCE
 		#sliding = false
-
-
-
-
-
-
-
 
 
 #func temp(delta: float) -> void:

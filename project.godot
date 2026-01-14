@@ -66,6 +66,10 @@ run={
 2d_physics/layer_3="enemies"
 2d_physics/layer_4="level"
 
+[physics]
+
+common/physics_ticks_per_second=100
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
