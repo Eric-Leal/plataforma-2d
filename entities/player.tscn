@@ -262,4 +262,4 @@ shape = SubResource("RectangleShape2D_qly61")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_i623q")
-animation = &"fall"
+animation = &"slide"
