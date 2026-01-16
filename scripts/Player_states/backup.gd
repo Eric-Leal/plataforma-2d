@@ -1,20 +1,15 @@
 extends CharacterBody2D
 
+
 enum PlayerState {
 	idle,
 	walk,
 	jump,
-	crouch,
-	walk_crouch,
+	duck,
+	walk_duck,
 	fall,
 	run,
 	slide,
-}
-
-const SPEEDS = {
-	WALK = 60.0,
-	CROUCH = 30.0,
-	RUN = 110.0
 }
 
 @onready var animacao: AnimatedSprite2D = $AnimatedSprite2D
@@ -23,6 +18,9 @@ const SPEEDS = {
 @export var acceleration = 580
 @export var deceleration = 580
 
+const WALK_SPEED = 60.0
+const DUCK_SPEED = 30.0
+const RUN_SPEED = 110.0
 const JUMP_VELOCITY = -250.0
 const SLIDE_COOLDOWN_FACTOR = 3
 const SLIDE_BONUS_DISTANCE = 35
@@ -30,15 +28,12 @@ var slide_cooldown = 0
 var slide_speed_bonus = 0
 var sliding_speed = current_speed
 var sliding: bool
-var current_speed = SPEEDS.WALK
+var current_speed = WALK_SPEED
 var direction = 0
 var status: PlayerState
 var jump_count = 0
 
 @export var max_jump_count = 2
-
-@onready var crouch_logic: Node = $DuckAndSlideState
-@onready var jump_and_fall_state: Node = $JumpAndFallState
 
 func move(speed: float, delta):
 	update_direction()
@@ -70,12 +65,16 @@ func _physics_process(delta: float) -> void:
 			walk_state()
 		PlayerState.jump:
 			jump_state()
-		PlayerState.crouch, PlayerState.walk_crouch, PlayerState.slide:
-			crouch_logic.update(delta)
+		PlayerState.duck:
+			duck_state()
+		PlayerState.walk_duck:
+			walk_duck_state()
 		PlayerState.fall:
 			fall_state()
 		PlayerState.run:
 			run_state()
+		PlayerState.slide:
+			slide_state()
 	
 	move(current_speed , delta)
 	
@@ -87,22 +86,11 @@ func go_to_slide_state():
 	current_speed = current_speed + 25
 	sliding = true
 	animacao.play("slide")
-	set_crouch_collision()
+	set_duck_collsion()
 
-func go_to_walk_crouch_state():
-	current_speed = SPEEDS.CROUCH
-	status = PlayerState.walk_crouch
-	animacao.play("walk_crouching")
-	set_crouch_collision()
 
-func go_to_crouch_state():
-	current_speed = SPEEDS.CROUCH
-	status = PlayerState.crouch
-	animacao.play("crouch")
-	set_crouch_collision()
 
 func go_to_run_state():
-	current_speed = SPEEDS.RUN
 	status = PlayerState.run
 	animacao.play("running")
 
@@ -110,15 +98,17 @@ func go_to_fall_state():
 	status = PlayerState.fall
 	animacao.play("fall")
 	
+func go_to_walk_duck_state():
+	status = PlayerState.walk_duck
+	animacao.play("walk_ducking")
+	set_duck_collsion()
 
 	
 func go_to_idle_state():
-	current_speed = SPEEDS.WALK
 	status = PlayerState.idle
 	animacao.play("idle")
 
 func go_to_walk_state():
-	current_speed = SPEEDS.WALK
 	status = PlayerState.walk
 	animacao.play("walk")
 	
@@ -129,29 +119,34 @@ func go_to_jump_state():
 	velocity.y = JUMP_VELOCITY
 	jump_count += 1
 
+func go_to_duck_state():
+	status = PlayerState.duck
+	animacao.play("duck")
+	set_duck_collsion()
 	
 func can_slide():
 	return slide_cooldown == 0	
 
-#func slide_state():
-	#if sliding_speed <= 0 or Input.is_action_just_released("slide"):
-		#exit_crouch_state()
-		#if direction != 0:
-			#if Input.is_action_pressed("run"):
-				#go_to_run_state()
-			#else:
-				#go_to_walk_state()
-		#else:
-			#go_to_idle_state()
-		#return
-		#
-	#if Input.is_action_just_pressed("jump"):
-		#exit_crouch_state()
-		#go_to_jump_state()
-		#return
+func slide_state():
+
+	if sliding_speed <= 0 or Input.is_action_just_released("slide"):
+		exit_from_duck_state()
+		if direction != 0:
+			if Input.is_action_pressed("run"):
+				go_to_run_state()
+			else:
+				go_to_walk_state()
+		else:
+			go_to_idle_state()
+		return
+		
+	if Input.is_action_just_pressed("jump"):
+		exit_from_duck_state()
+		go_to_jump_state()
+		return
 		
 func run_state():
-	
+	current_speed = RUN_SPEED
 
 	if Input.is_action_just_pressed("jump"):
 		go_to_jump_state()
@@ -165,8 +160,8 @@ func run_state():
 		go_to_idle_state()
 		return
 
-	if Input.is_action_pressed("crouch"):
-		go_to_walk_crouch_state()
+	if Input.is_action_pressed("duck"):
+		go_to_walk_duck_state()
 		return
 	
 	if !is_on_floor():
@@ -181,7 +176,7 @@ func run_state():
 
 
 func idle_state():
-	
+	current_speed = WALK_SPEED
 	if velocity.x != 0:
 		go_to_walk_state()
 		return
@@ -190,8 +185,8 @@ func idle_state():
 		go_to_jump_state()
 		return
 		
-	if Input.is_action_pressed("crouch"):
-		go_to_crouch_state()
+	if Input.is_action_pressed("duck"):
+		go_to_duck_state()
 		return
 
 func fall_state():
@@ -212,6 +207,7 @@ func can_jump() -> bool:
 	return jump_count < max_jump_count
 
 func walk_state():
+	current_speed = WALK_SPEED
 	
 	if velocity.x == 0:
 		go_to_idle_state()
@@ -221,8 +217,8 @@ func walk_state():
 		go_to_jump_state()
 		return
 		
-	if Input.is_action_pressed("crouch"):
-		go_to_walk_crouch_state()
+	if Input.is_action_pressed("duck"):
+		go_to_walk_duck_state()
 		return
 		
 	if !is_on_floor():
@@ -249,49 +245,49 @@ func jump_state():
 		return
 		
 
-#func crouch_state():
-	#current_speed = CROUCH_SPEED
-	#
-	#if Input.is_action_just_released("crouch"):
-		##exit_from_crouch_state()
-		##go_to_idle_state()
-		##return
-		#
-	#if direction != 0:
-		#go_to_walk_crouch_state()
-		#return
+func duck_state():
+	current_speed = DUCK_SPEED
+	
+	if Input.is_action_just_released("duck"):
+		exit_from_duck_state()
+		go_to_idle_state()
+		return
+		
+	if direction != 0:
+		go_to_walk_duck_state()
+		return
 
 	
 
-#func walk_crouch_state():
-	#current_speed = CROUCH_SPEED
-	#if Input.is_action_just_released("crouch"):
-		#exit_from_crouch_state()
-		#go_to_walk_state()
-		#return
-		#
-	#if direction == 0:
-		#go_to_crouch_state()
-		#return
-	#
-	#if Input.is_action_just_pressed("jump"):
-		#exit_from_crouch_state()
-		#current_speed = WALK_SPEED
-		#go_to_jump_state()
-		#return
-#
-	#if !is_on_floor():
-		#jump_count += 1
-		#go_to_fall_state()
-		#return
+func walk_duck_state():
+	current_speed = DUCK_SPEED
+	if Input.is_action_just_released("duck"):
+		exit_from_duck_state()
+		go_to_walk_state()
+		return
+		
+	if direction == 0:
+		go_to_duck_state()
+		return
+	
+	if Input.is_action_just_pressed("jump"):
+		exit_from_duck_state()
+		current_speed = WALK_SPEED
+		go_to_jump_state()
+		return
+
+	if !is_on_floor():
+		jump_count += 1
+		go_to_fall_state()
+		return
 	
 
 
-func set_crouch_collision():
+func set_duck_collsion():
 	colisao.shape.size.y = 11
 	colisao.position.y = 2.5
 	
-func exit_crouch_state():
+func exit_from_duck_state():
 	sliding = false
 	colisao.shape.size.y = 15
 	colisao.position.y = 0.5

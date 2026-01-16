@@ -125,7 +125,7 @@ animations = [{
 "texture": ExtResource("2_qsoyl")
 }],
 "loop": false,
-"name": &"crouch",
+"name": &"duck",
 "speed": 5.0
 }, {
 "frames": [{
@@ -246,7 +246,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_plaij")
 }],
 "loop": true,
-"name": &"walk_crouching",
+"name": &"walk_ducking",
 "speed": 10.0
 }]
 
@@ -256,9 +256,6 @@ collision_layer = 2
 collision_mask = 9
 script = ExtResource("1_merdl")
 max_jump_count = 1
-
-[node name="DuckAndSlideState" type="Node" parent="."]
-script = ExtResource("2_ef06p")
 
 [node name="JumpAndFallState" type="Node" parent="."]
 script = ExtResource("3_tjdhl")
@@ -270,4 +267,7 @@ shape = SubResource("RectangleShape2D_qly61")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_i623q")
-animation = &"walk_crouching"
+animation = &"slide"
+
+[node name="DuckAndSlideState" type="Node" parent="."]
+script = ExtResource("2_ef06p")
