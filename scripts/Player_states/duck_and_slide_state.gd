@@ -1,20 +1,25 @@
 extends Node
 
 @onready var player: CharacterBody2D = owner
+var slide_cooldown = 0
+var sliding_distance = 0
+var sliding: bool = false
 
+const SLIDE_COOLDOWN_FACTOR = 3
 
 func _ready() -> void:
 	pass
 
-func _process(_delta: float) -> void:
-	pass
+func _process(delta: float) -> void:
+	if sliding:
+		sliding_distance = move_toward(sliding_distance , 0, 100 * delta)
+		slide_cooldown = move_toward(slide_cooldown, 5, SLIDE_COOLDOWN_FACTOR * delta)
+	else:
+		slide_cooldown = move_toward(slide_cooldown, 0, 1 * delta)
+		
+	print(slide_cooldown)
 	
 func update(_delta):
-	
-	#if player.sliding:
-		#player.sliding_speed = move_toward(player.sliding_speed, 0, 100 * delta)
-		#player.slide_cooldown = move_toward(player.slide_cooldown, 5, player.SLIDE_COOLDOWN_FACTOR * delta)
-	
 	match player.status:
 		player.PlayerState.crouch:
 			crouch_state()
@@ -47,8 +52,7 @@ func walk_crouch_state():
 		return
 
 func crouch_state():
-	
-	
+
 	if Input.is_action_just_released("crouch"):
 		player.exit_crouch_state()
 		player.go_to_idle_state()
@@ -60,7 +64,7 @@ func crouch_state():
 	pass
 	
 func slide_state():
-	if player.sliding_speed <= 0 or Input.is_action_just_released("slide"):
+	if sliding_distance <= 0 or Input.is_action_just_released("slide"):
 		player.exit_crouch_state()
 		if player.direction != 0:
 			if Input.is_action_pressed("run"):

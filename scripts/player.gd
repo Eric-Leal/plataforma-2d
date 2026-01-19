@@ -12,6 +12,7 @@ enum PlayerState {
 }
 
 const SPEEDS = {
+	IDLE = 0.0,
 	WALK = 60.0,
 	CROUCH = 30.0,
 	RUN = 110.0
@@ -24,13 +25,8 @@ const SPEEDS = {
 @export var deceleration = 580
 
 const JUMP_VELOCITY = -250.0
-const SLIDE_COOLDOWN_FACTOR = 3
-const SLIDE_BONUS_DISTANCE = 35
-var slide_cooldown = 0
-var slide_speed_bonus = 0
-var sliding_speed = current_speed
-var sliding: bool
-var current_speed = SPEEDS.WALK
+const SLIDE_SPEED_BONUS = 25
+var current_speed = 0
 var direction = 0
 var status: PlayerState
 var jump_count = 0
@@ -52,15 +48,7 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if sliding:
-		sliding_speed = move_toward(sliding_speed , 0, 100 * delta)
-		slide_cooldown = move_toward(slide_cooldown, 5, SLIDE_COOLDOWN_FACTOR * delta)
-	if !sliding:
-		slide_cooldown = move_toward(slide_cooldown, 0, 1 * delta)
-	
-	print(slide_cooldown)
-
-
+	print(current_speed)
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 	match status:
@@ -81,11 +69,11 @@ func _physics_process(delta: float) -> void:
 	
 	move_and_slide()
 
-func go_to_slide_state():
+func go_to_slide_state(distance_penalty):
 	status = PlayerState.slide
-	sliding_speed = current_speed - slide_speed_bonus
-	current_speed = current_speed + 25
-	sliding = true
+	crouch_logic.sliding_distance = current_speed - distance_penalty
+	current_speed = current_speed + SLIDE_SPEED_BONUS
+	crouch_logic.sliding = true
 	animacao.play("slide")
 	set_crouch_collision()
 
@@ -96,7 +84,7 @@ func go_to_walk_crouch_state():
 	set_crouch_collision()
 
 func go_to_crouch_state():
-	current_speed = SPEEDS.CROUCH
+	current_speed = SPEEDS.IDLE
 	status = PlayerState.crouch
 	animacao.play("crouch")
 	set_crouch_collision()
@@ -110,10 +98,8 @@ func go_to_fall_state():
 	status = PlayerState.fall
 	animacao.play("fall")
 	
-
-	
 func go_to_idle_state():
-	current_speed = SPEEDS.WALK
+	current_speed = SPEEDS.IDLE
 	status = PlayerState.idle
 	animacao.play("idle")
 
@@ -122,36 +108,17 @@ func go_to_walk_state():
 	status = PlayerState.walk
 	animacao.play("walk")
 	
-	
 func go_to_jump_state():
 	status = PlayerState.jump
 	animacao.play("jump")
 	velocity.y = JUMP_VELOCITY
 	jump_count += 1
-
 	
 func can_slide():
-	return slide_cooldown == 0	
+	return crouch_logic.slide_cooldown == 0	
 
-#func slide_state():
-	#if sliding_speed <= 0 or Input.is_action_just_released("slide"):
-		#exit_crouch_state()
-		#if direction != 0:
-			#if Input.is_action_pressed("run"):
-				#go_to_run_state()
-			#else:
-				#go_to_walk_state()
-		#else:
-			#go_to_idle_state()
-		#return
-		#
-	#if Input.is_action_just_pressed("jump"):
-		#exit_crouch_state()
-		#go_to_jump_state()
-		#return
 		
 func run_state():
-	
 
 	if Input.is_action_just_pressed("jump"):
 		go_to_jump_state()
@@ -174,15 +141,14 @@ func run_state():
 		go_to_fall_state()
 		return
 
-	if Input.is_action_just_pressed("slide") && can_slide():
-		slide_speed_bonus = 45
-		go_to_slide_state()
+	if Input.is_action_just_pressed("slide") && can_slide() :
+		go_to_slide_state(45)
 		return
 
 
 func idle_state():
 	
-	if velocity.x != 0:
+	if velocity.x != 0 || Input.is_action_pressed("left") || Input.is_action_pressed("right"):
 		go_to_walk_state()
 		return
 	
@@ -206,6 +172,8 @@ func fall_state():
 			go_to_idle_state()
 		else:
 			go_to_walk_state()
+			
+		
 		return
 
 func can_jump() -> bool:
@@ -235,8 +203,7 @@ func walk_state():
 		return
 		
 	if Input.is_action_just_pressed("slide") && can_slide():
-		slide_speed_bonus = 10
-		go_to_slide_state()
+		go_to_slide_state(10)
 		return
 	
 func jump_state():
@@ -247,55 +214,19 @@ func jump_state():
 	if velocity.y > 0:
 		go_to_fall_state()
 		return
-		
-
-#func crouch_state():
-	#current_speed = CROUCH_SPEED
-	#
-	#if Input.is_action_just_released("crouch"):
-		##exit_from_crouch_state()
-		##go_to_idle_state()
-		##return
-		#
-	#if direction != 0:
-		#go_to_walk_crouch_state()
-		#return
-
 	
-
-#func walk_crouch_state():
-	#current_speed = CROUCH_SPEED
-	#if Input.is_action_just_released("crouch"):
-		#exit_from_crouch_state()
-		#go_to_walk_state()
-		#return
-		#
-	#if direction == 0:
-		#go_to_crouch_state()
-		#return
-	#
-	#if Input.is_action_just_pressed("jump"):
-		#exit_from_crouch_state()
-		#current_speed = WALK_SPEED
-		#go_to_jump_state()
-		#return
-#
-	#if !is_on_floor():
-		#jump_count += 1
-		#go_to_fall_state()
-		#return
-	
-
+	if Input.is_action_just_pressed("slide") && can_slide() && current_speed >= SPEEDS.RUN:
+			go_to_slide_state(25)
+			return
 
 func set_crouch_collision():
 	colisao.shape.size.y = 11
 	colisao.position.y = 2.5
 	
 func exit_crouch_state():
-	sliding = false
+	crouch_logic.sliding = false
 	colisao.shape.size.y = 15
 	colisao.position.y = 0.5
-
 
 func update_direction():
 	direction = Input.get_axis("left", "right")
