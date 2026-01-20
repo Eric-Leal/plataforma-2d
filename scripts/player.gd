@@ -23,6 +23,7 @@ const SPEEDS = {
 
 @export var acceleration = 580
 @export var deceleration = 580
+@export var max_jump_count = 2
 
 const JUMP_VELOCITY = -250.0
 const SLIDE_SPEED_BONUS = 25
@@ -31,10 +32,9 @@ var direction = 0
 var status: PlayerState
 var jump_count = 0
 
-@export var max_jump_count = 2
 
 @onready var crouch_logic: Node = $DuckAndSlideState
-@onready var jump_and_fall_state: Node = $JumpAndFallState
+@onready var jump_and_fall_logic: Node = $JumpAndFallState
 
 func move(speed: float, delta):
 	update_direction()
@@ -56,12 +56,10 @@ func _physics_process(delta: float) -> void:
 			idle_state()
 		PlayerState.walk:
 			walk_state()
-		PlayerState.jump:
-			jump_state()
+		PlayerState.jump, PlayerState.fall:
+			jump_and_fall_logic.update(delta)
 		PlayerState.crouch, PlayerState.walk_crouch, PlayerState.slide:
 			crouch_logic.update(delta)
-		PlayerState.fall:
-			fall_state()
 		PlayerState.run:
 			run_state()
 	
@@ -160,22 +158,6 @@ func idle_state():
 		go_to_crouch_state()
 		return
 
-func fall_state():
-	
-	if Input.is_action_just_pressed("jump") && can_jump():
-		go_to_jump_state()
-		return
-	
-	if is_on_floor():
-		jump_count = 0
-		if velocity.x == 0:
-			go_to_idle_state()
-		else:
-			go_to_walk_state()
-			
-		
-		return
-
 func can_jump() -> bool:
 	return jump_count < max_jump_count
 
@@ -206,24 +188,11 @@ func walk_state():
 		go_to_slide_state(10)
 		return
 	
-func jump_state():
-	if Input.is_action_just_pressed("jump") && can_jump():
-		go_to_jump_state()
-		return
-
-	if velocity.y > 0:
-		go_to_fall_state()
-		return
-	
-	if Input.is_action_just_pressed("slide") && can_slide() && current_speed >= SPEEDS.RUN:
-			go_to_slide_state(25)
-			return
-
 func set_crouch_collision():
 	colisao.shape.size.y = 11
 	colisao.position.y = 2.5
 	
-func exit_crouch_state():
+func set_standing_collision():
 	crouch_logic.sliding = false
 	colisao.shape.size.y = 15
 	colisao.position.y = 0.5

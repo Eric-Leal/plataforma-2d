@@ -32,7 +32,7 @@ func update(_delta):
 
 func walk_crouch_state():
 	if Input.is_action_just_released("crouch"):
-		player.exit_crouch_state()
+		player.set_standing_collision()
 		player.go_to_walk_state()
 		return
 		
@@ -41,7 +41,7 @@ func walk_crouch_state():
 		return
 	
 	if Input.is_action_just_pressed("jump"):
-		player.exit_crouch_state()
+		player.set_standing_collision()
 		player.current_speed = player.SPEEDS.WALK
 		player.go_to_jump_state()
 		return
@@ -54,7 +54,7 @@ func walk_crouch_state():
 func crouch_state():
 
 	if Input.is_action_just_released("crouch"):
-		player.exit_crouch_state()
+		player.set_standing_collision()
 		player.go_to_idle_state()
 		return
 		
@@ -65,7 +65,7 @@ func crouch_state():
 	
 func slide_state():
 	if sliding_distance <= 0 or Input.is_action_just_released("slide"):
-		player.exit_crouch_state()
+		player.set_standing_collision()
 		if player.direction != 0:
 			if Input.is_action_pressed("run"):
 				player.go_to_run_state()
@@ -76,6 +76,6 @@ func slide_state():
 		return
 	
 	if Input.is_action_just_pressed("jump"):
-		player.exit_crouch_state()
+		player.set_standing_collision()
 		player.go_to_jump_state()
 		return
