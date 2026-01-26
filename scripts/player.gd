@@ -1,5 +1,11 @@
 extends CharacterBody2D
 
+@onready var animacao: AnimatedSprite2D = $AnimatedSprite2D
+@onready var colisao: CollisionShape2D = $CollisionShape2D
+@onready var crouch_logic: Node = $States/DuckAndSlideState
+@onready var jump_and_fall_logic: Node = $States/JumpAndFallState
+@onready var walk_and_run_logic: Node = $States/WalkAndRunState
+
 enum PlayerState {
 	idle,
 	walk,
@@ -9,6 +15,7 @@ enum PlayerState {
 	fall,
 	run,
 	slide,
+	dead,
 }
 
 const SPEEDS = {
@@ -17,9 +24,6 @@ const SPEEDS = {
 	CROUCH = 30.0,
 	RUN = 110.0
 }
-
-@onready var animacao: AnimatedSprite2D = $AnimatedSprite2D
-@onready var colisao: CollisionShape2D = $CollisionShape2D
 
 @export var acceleration = 580
 @export var deceleration = 580
@@ -31,10 +35,6 @@ var current_speed = 0
 var direction = 0
 var status: PlayerState
 var jump_count = 0
-
-
-@onready var crouch_logic: Node = $DuckAndSlideState
-@onready var jump_and_fall_logic: Node = $JumpAndFallState
 
 func move(speed: float, delta):
 	update_direction()
@@ -48,24 +48,34 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	print(current_speed)
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 	match status:
 		PlayerState.idle:
 			idle_state()
-		PlayerState.walk:
-			walk_state()
+		PlayerState.walk, PlayerState.run:
+			walk_and_run_logic.update(delta)
 		PlayerState.jump, PlayerState.fall:
 			jump_and_fall_logic.update(delta)
 		PlayerState.crouch, PlayerState.walk_crouch, PlayerState.slide:
 			crouch_logic.update(delta)
-		PlayerState.run:
-			run_state()
+		PlayerState.dead:
+			dead_state(delta)
 	
 	move(current_speed , delta)
 	
 	move_and_slide()
+
+func go_to_dead_state():
+	status = PlayerState.dead
+	animacao.play("dead")
+	velocity = Vector2.ZERO
+	
+func dead_state(_delta):
+	
+	
+	pass
+
 
 func go_to_slide_state(distance_penalty):
 	status = PlayerState.slide
@@ -115,35 +125,6 @@ func go_to_jump_state():
 func can_slide():
 	return crouch_logic.slide_cooldown == 0	
 
-		
-func run_state():
-
-	if Input.is_action_just_pressed("jump"):
-		go_to_jump_state()
-		return
-	
-	if Input.is_action_just_released("run"):
-		go_to_walk_state()
-		return	
-	
-	if velocity.x == 0:
-		go_to_idle_state()
-		return
-
-	if Input.is_action_pressed("crouch"):
-		go_to_walk_crouch_state()
-		return
-	
-	if !is_on_floor():
-		jump_count += 1
-		go_to_fall_state()
-		return
-
-	if Input.is_action_just_pressed("slide") && can_slide() :
-		go_to_slide_state(45)
-		return
-
-
 func idle_state():
 	
 	if velocity.x != 0 || Input.is_action_pressed("left") || Input.is_action_pressed("right"):
@@ -161,33 +142,6 @@ func idle_state():
 func can_jump() -> bool:
 	return jump_count < max_jump_count
 
-func walk_state():
-	
-	if velocity.x == 0:
-		go_to_idle_state()
-		return
-		
-	if Input.is_action_just_pressed("jump"):
-		go_to_jump_state()
-		return
-		
-	if Input.is_action_pressed("crouch"):
-		go_to_walk_crouch_state()
-		return
-		
-	if !is_on_floor():
-		jump_count += 1
-		go_to_fall_state()
-		return
-
-	if Input.is_action_pressed("run"):
-		go_to_run_state()
-		return
-		
-	if Input.is_action_just_pressed("slide") && can_slide():
-		go_to_slide_state(10)
-		return
-	
 func set_crouch_collision():
 	colisao.shape.size.y = 11
 	colisao.position.y = 2.5
@@ -203,3 +157,12 @@ func update_direction():
 		animacao.flip_h = true
 	elif direction > 0:
 		animacao.flip_h = false
+
+
+func _on_hitbox_area_entered(area: Area2D) -> void:
+	if velocity.y > 0:
+		#inimigo morre
+		area.get_parent().queue_free()
+	else:
+		#player morre
+		go_to_dead_state()

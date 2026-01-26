@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://doc61wlw1ucb7"]
+[gd_scene load_steps=43 format=3 uid="uid://doc61wlw1ucb7"]
 
 [ext_resource type="Script" uid="uid://ct02bt4wlylu4" path="res://scripts/player.gd" id="1_merdl"]
 [ext_resource type="Texture2D" uid="uid://8eo2bmyt3cgd" path="res://sprites/1 - Penguin/Idle (16 x 16).png" id="2_b0kkn"]
@@ -9,7 +9,10 @@
 [ext_resource type="Texture2D" uid="uid://cl5p6ykfcm6jr" path="res://sprites/1 - Penguin/Jump (16 x 16).png" id="3_rfe5m"]
 [ext_resource type="Script" uid="uid://b3c5r4gjq8by3" path="res://scripts/Player_states/jump_and_fall_state.gd" id="3_tjdhl"]
 [ext_resource type="Texture2D" uid="uid://bpsktutedc3t5" path="res://sprites/1 - Penguin/Belly_Sliding (16 x 16).png" id="4_qly61"]
+[ext_resource type="Script" uid="uid://ipcwcxmongr" path="res://scripts/Player_states/walk_and_run_state.gd" id="4_x08pd"]
+[ext_resource type="Texture2D" uid="uid://bl3twqns22rel" path="res://sprites/1 - Penguin/Hurt (16 x 16).png" id="6_kdgjc"]
 [ext_resource type="Texture2D" uid="uid://cpwp8u6ychm0v" path="res://sprites/1 - Penguin/walk_ducking.png" id="7_6nm46"]
+[ext_resource type="Texture2D" uid="uid://dgsr00745hvnp" path="res://sprites/1 - Penguin/Lying_On_Ground (16 x 16).png" id="7_q0i8f"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qly61"]
 size = Vector2(14, 15)
@@ -127,6 +130,17 @@ animations = [{
 "loop": false,
 "name": &"crouch",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_kdgjc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_q0i8f")
+}],
+"loop": false,
+"name": &"dead",
+"speed": 2.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -250,6 +264,9 @@ animations = [{
 "speed": 10.0
 }]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0i614"]
+size = Vector2(14, 15)
+
 [node name="Player" type="CharacterBody2D" groups=["Player"]]
 z_index = 1
 collision_layer = 2
@@ -257,11 +274,16 @@ collision_mask = 9
 script = ExtResource("1_merdl")
 max_jump_count = 1
 
-[node name="DuckAndSlideState" type="Node" parent="."]
+[node name="States" type="Node" parent="."]
+
+[node name="DuckAndSlideState" type="Node" parent="States"]
 script = ExtResource("2_ef06p")
 
-[node name="JumpAndFallState" type="Node" parent="."]
+[node name="JumpAndFallState" type="Node" parent="States"]
 script = ExtResource("3_tjdhl")
+
+[node name="WalkAndRunState" type="Node" parent="States"]
+script = ExtResource("4_x08pd")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 z_index = 1
@@ -270,4 +292,13 @@ shape = SubResource("RectangleShape2D_qly61")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_i623q")
-animation = &"walk_crouching"
+animation = &"dead"
+
+[node name="Hitbox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_0i614")
+debug_color = Color(0.95839673, 2.5027991e-06, 0.5300088, 0.41960785)
+
+[connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]
