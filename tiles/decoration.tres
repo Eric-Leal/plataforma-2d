@@ -1,4 +1,4 @@
-[gd_resource type="TileSet" load_steps=9 format=3 uid="uid://dkhar7p18tlog"]
+[gd_resource type="TileSet" format=3 uid="uid://dkhar7p18tlog"]
 
 [ext_resource type="Texture2D" uid="uid://ds7y4e1mkuvp5" path="res://sprites/Seasonal Tilesets/4 - Winter World/Winter_entities (16 x 16).png" id="1_3e52g"]
 [ext_resource type="Texture2D" uid="uid://c2pp3fac7fr6d" path="res://sprites/Seasonal Tilesets/5 - Misc. universal tiles/House (112 x 96).png" id="2_4pksi"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://d1gnf7tfdk2pr"]
+[gd_scene format=3 uid="uid://d1gnf7tfdk2pr"]
 
 [ext_resource type="Script" uid="uid://lpu61dedy8q7" path="res://scripts/skeleton.gd" id="1_yag7t"]
 [ext_resource type="Texture2D" uid="uid://c4ilvtrejidrt" path="res://sprites/3 - Skeleton/Crumbling_Into_Bone_Pile (32 x 32).png" id="2_fpmxe"]
@@ -114,29 +114,29 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fpmxe"]
 size = Vector2(13, 27)
 
-[node name="Skeleton" type="CharacterBody2D"]
+[node name="Skeleton" type="CharacterBody2D" unique_id=1284148438]
 collision_layer = 4
 script = ExtResource("1_yag7t")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=607211506]
 position = Vector2(0.5, 2.5)
 shape = SubResource("RectangleShape2D_yag7t")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1184224379]
 sprite_frames = SubResource("SpriteFrames_fpmxe")
-animation = &"walk"
+animation = &"dead"
 
-[node name="Hitbox" type="Area2D" parent="."]
+[node name="Hitbox" type="Area2D" parent="." unique_id=794779451]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=415293736]
 position = Vector2(2.5, 2.5)
 shape = SubResource("RectangleShape2D_fpmxe")
 debug_color = Color(0.9670357, 0, 0.47979528, 0.41960785)
 
-[node name="WallDetector" type="RayCast2D" parent="."]
+[node name="WallDetector" type="RayCast2D" parent="." unique_id=1242300849]
 position = Vector2(0, 13)
 target_position = Vector2(18, 0)
 
-[node name="GroundDetector" type="RayCast2D" parent="."]
+[node name="GroundDetector" type="RayCast2D" parent="." unique_id=342656787]
 position = Vector2(14, 0)
 target_position = Vector2(0, 19)

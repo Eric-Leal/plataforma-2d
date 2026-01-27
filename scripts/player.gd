@@ -37,15 +37,15 @@ var status: PlayerState
 var jump_count = 0
 
 func move(speed: float, delta):
-	update_direction()
-	if direction:
-		velocity.x = move_toward(velocity.x, direction * speed, (acceleration - speed) * delta)
-	else:
-		velocity.x = move_toward(velocity.x, 0, (deceleration - speed) * delta)
+	if status != PlayerState.dead:
+		update_direction()
+		if direction:
+			velocity.x = move_toward(velocity.x, direction * speed, (acceleration - speed) * delta)
+		else:
+			velocity.x = move_toward(velocity.x, 0, (deceleration - speed) * delta)
 		
 func _ready() -> void:
 	go_to_idle_state()
-
 
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
@@ -61,7 +61,7 @@ func _physics_process(delta: float) -> void:
 			crouch_logic.update(delta)
 		PlayerState.dead:
 			dead_state(delta)
-	
+
 	move(current_speed , delta)
 	
 	move_and_slide()
@@ -70,12 +70,6 @@ func go_to_dead_state():
 	status = PlayerState.dead
 	animacao.play("dead")
 	velocity = Vector2.ZERO
-	
-func dead_state(_delta):
-	
-	
-	pass
-
 
 func go_to_slide_state(distance_penalty):
 	status = PlayerState.slide
@@ -125,9 +119,11 @@ func go_to_jump_state():
 func can_slide():
 	return crouch_logic.slide_cooldown == 0	
 
+
+
 func idle_state():
 	
-	if velocity.x != 0 || Input.is_action_pressed("left") || Input.is_action_pressed("right"):
+	if direction != 0:
 		go_to_walk_state()
 		return
 	
@@ -138,6 +134,11 @@ func idle_state():
 	if Input.is_action_pressed("crouch"):
 		go_to_crouch_state()
 		return
+
+func dead_state(_delta):
+	
+	pass
+
 
 func can_jump() -> bool:
 	return jump_count < max_jump_count
@@ -162,7 +163,8 @@ func update_direction():
 func _on_hitbox_area_entered(area: Area2D) -> void:
 	if velocity.y > 0:
 		#inimigo morre
-		area.get_parent().queue_free()
+		area.get_parent().take_damage()
+		go_to_jump_state()
 	else:
 		#player morre
 		go_to_dead_state()

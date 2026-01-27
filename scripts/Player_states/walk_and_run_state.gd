@@ -5,8 +5,7 @@ extends Node
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass # Replace with function body.
-
-
+	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
 	pass
@@ -21,7 +20,7 @@ func update(_delta):
 			
 func walk_state():
 	
-	if player.velocity.x == 0:
+	if player.direction == 0:
 		player.go_to_idle_state()
 		return
 		
@@ -46,6 +45,8 @@ func walk_state():
 		player.go_to_slide_state(10)
 		return
 	
+	
+	
 func run_state():
 
 	if Input.is_action_just_pressed("jump"):
@@ -56,7 +57,7 @@ func run_state():
 		player.go_to_walk_state()
 		return	
 	
-	if player.velocity.x == 0:
+	if player.direction == 0:
 		player.go_to_idle_state()
 		return
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=3 uid="uid://doc61wlw1ucb7"]
+[gd_scene format=3 uid="uid://doc61wlw1ucb7"]
 
 [ext_resource type="Script" uid="uid://ct02bt4wlylu4" path="res://scripts/player.gd" id="1_merdl"]
 [ext_resource type="Texture2D" uid="uid://8eo2bmyt3cgd" path="res://sprites/1 - Penguin/Idle (16 x 16).png" id="2_b0kkn"]
@@ -267,36 +267,36 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0i614"]
 size = Vector2(14, 15)
 
-[node name="Player" type="CharacterBody2D" groups=["Player"]]
+[node name="Player" type="CharacterBody2D" unique_id=300069309 groups=["Player"]]
 z_index = 1
 collision_layer = 2
 collision_mask = 9
 script = ExtResource("1_merdl")
 max_jump_count = 1
 
-[node name="States" type="Node" parent="."]
+[node name="States" type="Node" parent="." unique_id=1225187835]
 
-[node name="DuckAndSlideState" type="Node" parent="States"]
+[node name="DuckAndSlideState" type="Node" parent="States" unique_id=118694926]
 script = ExtResource("2_ef06p")
 
-[node name="JumpAndFallState" type="Node" parent="States"]
+[node name="JumpAndFallState" type="Node" parent="States" unique_id=1524800582]
 script = ExtResource("3_tjdhl")
 
-[node name="WalkAndRunState" type="Node" parent="States"]
+[node name="WalkAndRunState" type="Node" parent="States" unique_id=639755017]
 script = ExtResource("4_x08pd")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1180730134]
 z_index = 1
 position = Vector2(0, 0.5)
 shape = SubResource("RectangleShape2D_qly61")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=821584357]
 sprite_frames = SubResource("SpriteFrames_i623q")
 animation = &"dead"
 
-[node name="Hitbox" type="Area2D" parent="."]
+[node name="Hitbox" type="Area2D" parent="." unique_id=1226282993]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=283167481]
 position = Vector2(0, 0.5)
 shape = SubResource("RectangleShape2D_0i614")
 debug_color = Color(0.95839673, 2.5027991e-06, 0.5300088, 0.41960785)

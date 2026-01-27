@@ -5,7 +5,8 @@ extends Node
 func _ready():
 	pass
 
-func update(_delta):
+func update(delta):
+	update_air_speed()
 	match player.status:
 		player.PlayerState.jump:
 			jump_state()
@@ -27,8 +28,19 @@ func fall_state():
 			player.go_to_walk_state()
 		return
 		
+func update_air_speed():
+	if player.direction != 0.0 and Input.is_action_pressed("run"):
+		player.current_speed = player.SPEEDS.RUN
+	elif player.direction != 0.0:
+		player.current_speed = player.SPEEDS.WALK
+	else:
+		player.current_speed = player.SPEEDS.IDLE
+		
+
+
 
 func jump_state():
+
 	if Input.is_action_just_pressed("jump") && player.can_jump():
 		player.go_to_jump_state()
 		return
