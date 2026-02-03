@@ -5,6 +5,7 @@ extends CharacterBody2D
 @onready var crouch_logic: Node = $States/DuckAndSlideState
 @onready var jump_and_fall_logic: Node = $States/JumpAndFallState
 @onready var walk_and_run_logic: Node = $States/WalkAndRunState
+@onready var reload_timer: Timer = $ReloadTimer
 
 enum PlayerState {
 	idle,
@@ -70,6 +71,7 @@ func go_to_dead_state():
 	status = PlayerState.dead
 	animacao.play("dead")
 	velocity = Vector2.ZERO
+	reload_timer.start()
 
 func go_to_slide_state(distance_penalty):
 	status = PlayerState.slide
@@ -119,8 +121,6 @@ func go_to_jump_state():
 func can_slide():
 	return crouch_logic.slide_cooldown == 0	
 
-
-
 func idle_state():
 	
 	if direction != 0:
@@ -167,4 +167,9 @@ func _on_hitbox_area_entered(area: Area2D) -> void:
 		go_to_jump_state()
 	else:
 		#player morre
-		go_to_dead_state()
+		if status != PlayerState.dead:
+			go_to_dead_state()
+
+
+func _on_reload_timer_timeout() -> void:
+	get_tree().reload_current_scene()
